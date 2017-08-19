@@ -9,11 +9,13 @@ let getRandomInRange = function (min, max) {
 let withDelay = function() {
 	return new Promise(function(resolve, reject) {
 		//Any asynchronous code
-		let delay = getRandomInRange(1, 3) * 1000;
+		let delay = getRandomInRange(1, 4) * 1000;
 
-		setTimeout(function(){
-			resolve(delay);
-		}, delay);
+		if (delay !== 4000) {			
+			setTimeout(function(){
+				return resolve(delay); // Success!
+			}, delay);
+		} else return reject(Error("Long delay!")); // Failure!
 	});
 };
 
@@ -24,15 +26,18 @@ let example1 = function() {
 	//Chain of promises
 	withDelay()
 		.then(function(delay){ //Handler on success
-			console.log(`1: ${delay}`);
+			console.log(`1: ${delay} ms`);
 			return withDelay(); //This promise will be passed as the return value of "then"
 		})
 		.then(function(delay){
-			console.log(`2: ${delay}`);
+			console.log(`2: ${delay} ms`);
 			return withDelay();
 		})
 		.then(function(delay){
-			console.log(`3: ${delay}`);
+			console.log(`3: ${delay} ms`);
+		})
+		.catch(function(error){ //Handler on failure
+			console.error(error);
 		});
 
 	//Consecutive execution 1.2
@@ -42,9 +47,13 @@ let example1 = function() {
 				.then(function(delay){				
 					return (delay / 1000); //This value will be passed to the next "then"
 				})
-				.then(function(infoDelay) {
-					console.log(`${count}: ${infoDelay} sec`);
+				.then(function(delayInSec){
+					console.log(`${count}: ${delayInSec} sec`);
 					return recursionFunc (--count);
+				})
+				.catch(function(error){
+					console.error(error);
+					return;
 				});
 		} else return;
 	};
@@ -59,6 +68,9 @@ let example2 = function() {
 	Promise.all([p1, p2, p3])
 		.then(function(values) { //This "then" will be fulfilled after success in all promises
 			console.log(values);
+		})
+		.catch(function(error){
+			console.error(error);
 		});
 };
 
