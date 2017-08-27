@@ -1,7 +1,18 @@
 "use strict";
 
 let Ajax = (function(){
+	let data = {
+		method: "",
+		url: "",
+		params: ""
+	};
+
 	const _data = {
+		default: {
+	        method: "POST",
+	        url: "php/server.php",
+	        params: "{\"testPOST\":\"1\"}"
+	    },
 	    getXHR: function () {
 	        let requestObj;
 
@@ -23,22 +34,44 @@ let Ajax = (function(){
 	        }
 
 	        return requestObj;
-	    },
-	    default: {
-	        method: "POST",
-	        url: "php/server.php",
-	        params: "{\"default\":\"1\"}"
-	    }
+	    }	    
     };
 
 	return {
-		sendRequest: function(method = _data.default.method, url = _data.default.url, params = _data.default.params) {
+		method: function(method) {
+			data.method = method;
+			return this;
+		},
+		url: function(url) {
+			data.url = url;
+			return this;
+		},
+		params: function(params) {
+			data.params = params;
+			return this;
+		},
+		send: function() {
 			return new Promise(function(resolve, reject){
-				let request = new _data.getXHR();
+				let request = new _data.getXHR(),
+					method = data.method,
+					url = data.url,
+					params = data.params;				
+				
+				method = (method) ? method : _data.default.method;
+				url	= (url) ? url : _data.default.url;
+				params = (params) ? params : _data.default.params;
 
 				if (request) {
-					request.open(method, url, true);
-					request.setRequestHeader("Content-type", "application/json; charset=UTF-8;");
+					switch (method) {
+						case "POST":
+							request.open(method, url, true);
+							request.setRequestHeader("Content-type", "application/json; charset=UTF-8;");
+							break;
+						case "GET":
+							request.open(method, `${url}?${params}`, true);
+							request.setRequestHeader("Content-type", "application/x-www-form-urlencoded; charset=UTF-8;");
+							params = null;
+					}
 					
 					request.onerror = function() {
 						reject("Network error!");
@@ -51,8 +84,11 @@ let Ajax = (function(){
                             reject(this.statusText);
                         }
                     };
-                    
                     request.send(params);
+
+                    data.method = "";
+                    data.url = "";
+                    data.params = "";
 				} else reject("Browser not support XHR!");
 			});
 		}
