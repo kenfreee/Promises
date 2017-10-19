@@ -32,7 +32,24 @@
         });
 
 	let forPost = JSON.stringify({testPOST: "1"});
-	window.fetch('php/server.php', {method: 'POST', body: forPost})
+    //let content = "Hello World";
+    // myHeaders.append("Content-Type", "application/json; charset=UTF-8;");
+    // myHeaders.append("Content-Length", content.length.toString());
+    // myHeaders.append("X-Custom-Header", "ProcessThisImmediately");
+
+    let myHeaders = new Headers({"Content-Type": "application/json; charset=UTF-8;"});
+
+    let myInit = {
+        method: 'POST',
+        body: forPost,
+        headers: myHeaders,
+        mode: 'cors',
+        cache: 'default'
+    };
+
+    let myRequest = new Request('php/server.php', myInit);
+
+	window.fetch(myRequest, myInit)
 		.then(function (response) {
 			console.log(response);
 		});
