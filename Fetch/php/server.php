@@ -13,6 +13,8 @@
 		if ($data !== NULL) {
 			if (isset($data['testPOST']) && $data['testPOST'] === '1') {
 				exit("OK!");
-			}
+			} else if (isset($data['testPOST']) && $data['testPOST'] === '2') {
+			    exit(json_encode(['status' => 'OK!']));
+            }
 		}
 	}
