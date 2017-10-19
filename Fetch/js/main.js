@@ -31,12 +31,13 @@
 			console.log(error)
         });
 
-	let forPost = JSON.stringify({testPOST: "1"});
+
     //let content = "Hello World";
     // myHeaders.append("Content-Type", "application/json; charset=UTF-8;");
     // myHeaders.append("Content-Length", content.length.toString());
     // myHeaders.append("X-Custom-Header", "ProcessThisImmediately");
 
+    let forPost = JSON.stringify({testPOST: "1"});
     let myHeaders = new Headers({"Content-Type": "application/json; charset=UTF-8;"});
 
     let myInit = {
