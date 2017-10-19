@@ -9,10 +9,23 @@
 						resolve(response);
                     }, 2000);
                 });
-			} else return Promise.reject(new Error(response.statusText));
+			} else throw new Error('Error!'); //return Promise.reject(new Error(response.statusText));
         })
 		.then(function (response) {
 			console.log(response);
+			return Promise.resolve(response);
+        })
+        .then(function (response) {
+            console.log('Status: ' + response.status);
+            console.log('StatusText: ' + response.statusText);
+            console.log('Type: ' + response.type);
+            console.log('URL: ' + response.url);
+            console.log('Content-Type: ' +response.headers.get('Content-Type'));
+            console.log(response.headers.get('Server'));
+
+            response.text().then(function (text) {
+				console.log(text);
+            });
         })
 		.catch(function (error) {
 			console.log(error)
